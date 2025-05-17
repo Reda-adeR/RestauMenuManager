@@ -2,7 +2,7 @@
 
 # Create your views here.
 
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import MenuItem
 from .serializers import MenuItemSerializer
 
@@ -12,20 +12,7 @@ class MenuItemListView(ListCreateAPIView):
     serializer_class = MenuItemSerializer
 
 # specific ID menu/ID
-class MenuItemDetailView(RetrieveAPIView):
-    queryset = MenuItem.objects.all()
-    serializer_class = MenuItemSerializer
-    lookup_field = 'id'
-
-# Update query with ID menu/ID
-class MenuItemUpdateView(UpdateAPIView):
-    queryset = MenuItem.objects.all()
-    serializer_class = MenuItemSerializer
-    lookup_field = 'id'
-
-
-#  DELETE query with ID menu/ID
-class MenuItemDeleteView(DestroyAPIView):
+class Generic(RetrieveUpdateDestroyAPIView):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
     lookup_field = 'id'
