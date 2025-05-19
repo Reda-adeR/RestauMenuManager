@@ -10,13 +10,7 @@ from rest_framework.response import Response
 from django.contrib.auth.hashers import check_password
 
 
-
-# This one is for select all / and POST 
-class MenuItemListView(ListCreateAPIView):
-    #  checker Token : soigjodfigj
-    queryset = MenuItem.objects.all()
-    serializer_class = MenuItemSerializer
-
+class BasicAuthChecker:
     def initial(self, request, *args, **kwargs):
         username = request.data.get('userName')
         password = request.data.get('pswd')
@@ -38,9 +32,17 @@ class MenuItemListView(ListCreateAPIView):
         raise PermissionDenied(detail="Invalid username or password")
     
 
+# This one is for select all / and POST 
+class MenuItemListView(BasicAuthChecker, ListCreateAPIView):
+    #  checker Token : soigjodfigj
+    queryset = MenuItem.objects.all()
+    serializer_class = MenuItemSerializer
+
+    
+
 
 # specific ID menu/ID
-class Generic(RetrieveUpdateDestroyAPIView):
+class Generic(BasicAuthChecker, RetrieveUpdateDestroyAPIView):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
     lookup_field = 'id'
