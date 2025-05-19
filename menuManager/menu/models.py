@@ -4,3 +4,7 @@ from django.db import models
 class MenuItem(models.Model):
     itemName  = models.CharField(max_length=30)
     itemPrice = models.IntegerField(default=0)
+
+class UserModel(models.Model):
+    userName = models.CharField(max_length=100, unique=True)
+    pswd     = models.CharField(max_length=100)
