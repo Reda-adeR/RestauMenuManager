@@ -12,7 +12,7 @@ class MenuItemSerializer(serializers.ModelSerializer):
 class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ['userName', 'pswd']
+        fields = ['username', 'password']
 
     def validate_pswd(self, value):
         if len(value) < 8:
@@ -24,5 +24,5 @@ class UserModelSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        validated_data['pswd'] = make_password(validated_data['pswd'])
+        validated_data['password'] = make_password(validated_data['password'])
         return super().create(validated_data)

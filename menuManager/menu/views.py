@@ -6,50 +6,76 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from .models import MenuItem, UserModel
 from .serializers import MenuItemSerializer, UserModelSerializer
 
-from rest_framework.response import Response
-from django.contrib.auth.hashers import check_password
+from .authLogic import BasicAuthChecker
+# from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.permissions import IsAuthenticated
 
 
-class BasicAuthChecker:
-    def initial(self, request, *args, **kwargs):
-        username = request.data.get('userName')
-        password = request.data.get('pswd')
-
-        if not username or not password: return self._unauthorized_response()
-
-        try:
-            user = UserModel.objects.get(userName=username)
-        except UserModel.DoesNotExist:
-            return self._unauthorized_response()
-
-        if not check_password(password, user.pswd): return self._unauthorized_response()
-
-        # If all good, call parent initial (continues processing)
-        return super().initial(request, *args, **kwargs)
-
-    def _unauthorized_response(self):
-        from rest_framework.exceptions import PermissionDenied
-        raise PermissionDenied(detail="Invalid username or password")
-    
 
 # This one is for select all / and POST 
-class MenuItemListView(BasicAuthChecker, ListCreateAPIView):
+class MenuItemListView(ListCreateAPIView):
     #  checker Token : soigjodfigj
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
+    permission_classes = [IsAuthenticated]
 
     
 
 
 # specific ID menu/ID
-class Generic(BasicAuthChecker, RetrieveUpdateDestroyAPIView):
+class Generic(RetrieveUpdateDestroyAPIView):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
     lookup_field = 'id'
+    permission_classes = [IsAuthenticated]
 
 
 
-#  Login/Logout API's
+#  sign Up subs API's
 class LoginUser(CreateAPIView):
     queryset = UserModel.objects.all()
     serializer_class = UserModelSerializer
+
+
+# login
+# class AccountLogin():
+#     pass
+
+from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
+from django.contrib.auth.hashers import check_password
+from rest_framework_simplejwt.tokens import RefreshToken
+
+# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+
+#     userName = serializers.CharField(required=False)
+#     pswd     = serializers.CharField(required=False)
+
+#     def validate(self, attrs):
+#         username = attrs.get('username') or attrs.get('username')
+#         password = attrs.get('password') or attrs.get('password')
+
+#         try:
+#             # Fetch the user from your custom UserModel
+#             user = UserModel.objects.get(username=username)
+#         except UserModel.DoesNotExist:
+#             raise AuthenticationFailed('Invalid credentials')
+
+#         # Check the password using Django's check_password
+#         if not check_password(password, user.password):
+#             raise AuthenticationFailed('Invalid credentials')
+
+#         # Generate tokens manually
+#         refresh = RefreshToken.for_user(user)
+#         return {
+#             'refresh': str(refresh),
+#             'access': str(refresh.access_token),
+#         }
+
+
+
+class AccountLogin(TokenObtainPairView):
+    serializer_class = TokenObtainPairSerializer

@@ -6,5 +6,6 @@ class MenuItem(models.Model):
     itemPrice = models.IntegerField(default=0)
 
 class UserModel(models.Model):
-    userName = models.CharField(max_length=100, unique=True)
-    pswd     = models.CharField(max_length=100)
+    username = models.CharField(max_length=100, unique=True)
+    password     = models.CharField(max_length=100)
+    # email    = models.EmailField( unique=True )
