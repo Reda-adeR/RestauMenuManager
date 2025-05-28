@@ -16,3 +16,17 @@ class Generic(RetrieveUpdateDestroyAPIView):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
     lookup_field = 'id'
+
+
+# # User registration view
+# 
+from rest_framework.response import Response
+from .serializers import UserRegisterSerializer
+
+class UserRegisterView(CreateAPIView):
+    def post(self, request):
+        serializer = UserRegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({'message': 'User created successfully', 'user_id': user.id}, status=201)
+        return Response(serializer.errors, status=400)
