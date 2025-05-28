@@ -2,11 +2,12 @@ from django.urls import path
 
 from .views import MenuItemListView, Generic
 
-from .views import UserRegisterView
+from .views import UserRegisterView, TokenObtainView
 urlpatterns = [
     path('menu/', MenuItemListView.as_view(), name='menu-list'),
     path('menu/<int:id>/', Generic.as_view(), name='menu-detail'),
     path('signup/', UserRegisterView.as_view(), name='sign-up'),
+    path('login/', TokenObtainView.as_view(), name='token-obtain'),
 ]
 
 
